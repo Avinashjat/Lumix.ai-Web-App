@@ -1,4 +1,14 @@
-
+import {Route , Routes } from "react-router-dom"
+import Home from "./pages/Home"
+import Layout from "./pages/Layout"
+import BlogTitle from "./pages/BlogTitle"
+import Community from "./pages/Community"
+import DashBoard from "./pages/DashBoard"
+import GenerateImage from "./pages/GenerateImage"
+import RemoveObject from "./pages/RemoveObject"
+import RemoveBackGroud from "./pages/RemoveBackGroud"
+import ReviewResume from "./pages/ReviewResume"
+import WriteArtical from "./pages/WriteArtical"
 
 
 function App() {
@@ -6,9 +16,24 @@ function App() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline bg-green-300">
-      Hello world!
-    </h1>
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        {/* Parent Route */}
+        <Route path="/ai" element={<Layout />}>
+          {/* Default child route (when visiting /ai) */}
+          <Route index element={<DashBoard />} />
+
+          {/* Nested child routes (relative paths) */}
+          <Route path="blog-title" element={<BlogTitle />} />
+          <Route path="community" element={<Community />} />
+          <Route path="generate-image" element={<GenerateImage />} />
+          <Route path="remove-object" element={<RemoveObject />} />
+          <Route path="remove-background" element={<RemoveBackGroud />} />
+          <Route path="review-resume" element={<ReviewResume />} />
+          <Route path="write-artical" element={<WriteArtical />} />
+        </Route>
+      </Routes>     
     </>
   )
 }
