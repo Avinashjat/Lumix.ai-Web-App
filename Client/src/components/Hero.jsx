@@ -4,13 +4,26 @@ import { useNavigate } from "react-router-dom";
 
 function Hero() {
 
+  const companies = [
+    "Instagram",
+    "Facebook",
+    "Slack",
+    "Framer",
+    "Netflix",
+    "Google",
+    "LinkedIn",
+  ];
+
   const Navigate = useNavigate();
   return (
-    <div className="px-4 sm:px-20 xl:px-32 relative inline-flex flex-col justify-center w-full  bg-[url(./bg.png)] bg-cover bg-no-repeat min-h-screen ">
+
+    <>
+  
+    <div className="px-4 pb-14 md:pb-0 sm:px-20 xl:px-32 relative inline-flex flex-col justify-center w-full  bg-[url(./bg.png)] bg-cover bg-no-repeat min-h-screen ">
 
 
-      <div className="text-center mt-20 mb-6">
-        <h1 className="text-3xl sm:text-5xl md:text-6xl  2xl:text-7xl font-bold  text-center  mb-6 font-semibold  mx-auto leading-[1.2] ">
+      <div className="text-center mt-40 mb-6">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl  2xl:text-[75px] font-semibold  text-center  mb-6  mx-auto leading-[1.2] ">
           Create amazing content <br /> with
           <span className="text-blue-800">AI tools</span> </h1>
         <p className="mt-4  max-w-xs  sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600">
@@ -21,7 +34,7 @@ function Hero() {
 
 
 
-      <div className="flex justify-center gap-4 text-sm max-sm:text-xs ">
+      <div className="flex flex-wrap justify-center gap-4 text-sm max-sm:text-xs ">
         <button onClick={()=> Navigate('/ai')} className="bg-blue-800  rounded-lg text-white cursor-pointer px-10 py-3 hover:scale-105 active:scale-95  transition ">
          
           Start creating now
@@ -36,7 +49,46 @@ function Hero() {
         <img className=" h-8" src={assets.user_group} alt="" />Trusted by 10k+ people
         
       </div>
+
+
+
+       <div className="relative w-full py-6 mt-20 overflow-hidden">
+  {/* Gradient fade edges */}
+  <div className="absolute left-0 top-0 h-full w-[30%] bg-gradient-to-r from-white to-transparent z-10 rounded-full "></div>
+  <div className="absolute right-0 top-0 h-full w-[30%] bg-gradient-to-l from-white to-transparent z-10 rounded-full"></div>
+  
+
+  {/* Scrolling container */}
+  <div className="mx-auto w-[70%] overflow-hidden">
+    <div className="flex animate-marquee">
+      {/* First set */}
+      {companies.map((c, i) => (
+        <span
+          key={i}
+          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-700"
+        >
+          {c}
+        </span>
+      ))}
+
+      {/* Duplicate set */}
+      {companies.map((c, i) => (
+        <span
+          key={`dup-${i}`}
+          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-700"
+        >
+          {c}
+        </span>
+      ))}
     </div>
+  </div>
+</div>
+
+    
+
+    </div>
+
+</>
   );
 }
 
