@@ -17,14 +17,14 @@ function Layout() {
       <nav className='w-full h-16  px-10  flex justify-between border-b border-gray-200'>
         <img  src={assets.logo} alt="Logo" onClick={()=>navigate('/')}  />
         {
-          sidebar ? <X className='w-6 h-6  text-gray-600 sm:hidden' onClick={()=>setSidebar(false)} />
+          sidebar ? <X className=' w-6 h-6 text-gray-600 sm:hidden' onClick={()=>setSidebar(false)} />
            : <Menu className='w-6 h-6 text-gray-600 sm:hidden' onClick={()=>setSidebar(true)} />
 
         }
       </nav>
       <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
         <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
-        <div className=' flex-1 h-full bg-gray-200 overflow-y-auto'>
+        <div className=' flex-1 h-full bg-gray-100 overflow-y-auto'>
              <Outlet />
 
         </div>
