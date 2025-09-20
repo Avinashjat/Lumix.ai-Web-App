@@ -25,7 +25,7 @@ function Hero() {
       <div className="text-center mt-40 mb-6">
         <h1 className="text-3xl sm:text-5xl md:text-6xl  2xl:text-[75px] font-semibold  text-center  mb-6  mx-auto leading-[1.2] ">
           Create amazing content <br /> with
-          <span className="text-blue-800">AI tools</span> </h1>
+          <span className="text-blue-600">AI tools</span> </h1>
         <p className="mt-4  max-w-xs  sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600">
           Transform your content creation with our suite of premium AI
           tools.Write articles, generate images, and enhance your workflow.
@@ -35,7 +35,7 @@ function Hero() {
 
 
       <div className="flex flex-wrap justify-center gap-4 text-sm max-sm:text-xs ">
-        <button onClick={()=> Navigate('/ai')} className="bg-blue-800  rounded-lg text-white cursor-pointer px-10 py-3 hover:scale-105 active:scale-95  transition ">
+        <button onClick={()=> Navigate('/ai')} className="bg-blue-600  rounded-lg text-white cursor-pointer px-10 py-3 hover:scale-105 active:scale-95  transition ">
          
           Start creating now
         </button>
@@ -65,7 +65,7 @@ function Hero() {
       {companies.map((c, i) => (
         <span
           key={i}
-          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-700"
+          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-600"
         >
           {c}
         </span>
@@ -75,7 +75,7 @@ function Hero() {
       {companies.map((c, i) => (
         <span
           key={`dup-${i}`}
-          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-700"
+          className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-600"
         >
           {c}
         </span>

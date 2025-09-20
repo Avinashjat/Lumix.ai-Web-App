@@ -25,13 +25,13 @@ function App() {
           <Route index element={<DashBoard />} />
 
           {/* Nested child routes (relative paths) */}
-          <Route path="blog-title" element={<BlogTitle />} />
+          <Route path="blog-titles" element={<BlogTitle />} />
           <Route path="community" element={<Community />} />
-          <Route path="generate-image" element={<GenerateImage />} />
+          <Route path="generate-images" element={<GenerateImage />} />
           <Route path="remove-object" element={<RemoveObject />} />
           <Route path="remove-background" element={<RemoveBackGroud />} />
           <Route path="review-resume" element={<ReviewResume />} />
-          <Route path="write-artical" element={<WriteArtical />} />
+          <Route path="write-article" element={<WriteArtical />} />
         </Route>
       </Routes>     
     </>
