@@ -15,7 +15,7 @@ function Layout() {
     <div className='h-screen flex flex-col justify-start items-start'>
 
       <nav className='w-full h-16  px-10  flex justify-between border-b border-gray-200'>
-        <img  src={assets.logo} alt="Logo" onClick={()=>navigate('/')}  />
+        <img className='cursor-pointer' src={assets.logo} alt="Logo" onClick={()=>navigate('/')}  />
         {
           sidebar ? <X className=' w-6 h-6 text-gray-600 sm:hidden' onClick={()=>setSidebar(false)} />
            : <Menu className='w-6 h-6 text-gray-600 sm:hidden' onClick={()=>setSidebar(true)} />
