@@ -2,7 +2,12 @@ import React from 'react'
 
 function Community() {
   return (
-    <div> I am Community</div>
+    <div className=''> 
+      <div>Creations</div>
+      <div>
+        
+      </div>
+    </div>
   )
 }
 

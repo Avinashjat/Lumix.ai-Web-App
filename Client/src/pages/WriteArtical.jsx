@@ -30,7 +30,7 @@ function WriteArtical() {
 
          <p className='font-medium text-sm mt-6'> Aticle Topic</p>
 
-         <input type="text" onChange={(e)=>setInput(e.target.value)}  value={input} className='border border-gray-500 p-2 px-3 mt-2 outline-none text-sm w-full rounded-md' placeholder= "Write Article text here...." />
+         <input type="text" onChange={(e)=>setInput(e.target.value)}  value={input} className='border border-gray-300 p-2 px-3 mt-2 outline-none text-sm w-full rounded-md' placeholder= "Write Article text here...." />
 
          <p className='mt-4 text-sm font-medium'> Article Length</p>
 
@@ -44,7 +44,7 @@ function WriteArtical() {
 
            
   
-        <button className='w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer '>
+        <button className='w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-10 text-sm rounded-lg cursor-pointer '>
           <Edit className='w-5' />
            Generate article
         </button>
