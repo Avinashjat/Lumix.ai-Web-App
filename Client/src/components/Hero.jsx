@@ -99,6 +99,8 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
 
 function Hero() {
   const companies = [
@@ -132,15 +134,35 @@ function Hero() {
 
       {/* Hero content */}
       <div className="text-center mt-40 mb-6">
-        <h1 className="text-3xl sm:text-5xl md:text-6xl 2xl:text-[75px] font-semibold mb-6 leading-[1.2]">
+        <motion.h1 className="text-3xl sm:text-5xl md:text-6xl 2xl:text-[75px] font-semibold mb-6 leading-[1.2]"
+                initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 240, damping: 70, mass: 1 }}  
+        >
           Create amazing content <br /> with <span className="text-blue-600">AI tools</span>
-        </h1>
-        <p className="mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600">
+        </motion.h1>
+
+
+        <motion.p className="mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl m-auto max-sm:text-xs text-gray-600"
+         initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+                >
           Transform your content creation with our suite of premium AI tools. Write articles, generate images, and enhance your workflow.
-        </p>
+        </motion.p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 text-sm max-sm:text-xs">
+
+
+
+      <motion.div className="flex flex-wrap justify-center gap-4 text-sm max-sm:text-xs"
+        initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+                >
         <button
           onClick={() => Navigate("/ai")}
           className="bg-blue-600 rounded-lg text-white px-10 py-3 hover:scale-105 active:scale-95 transition"
@@ -150,11 +172,16 @@ function Hero() {
         <button className="bg-white px-10 py-3 border border-gray-300 rounded-lg text-black hover:scale-105 active:scale-95 transition">
           Watch demo
         </button>
-      </div>
+      </motion.div>
 
-      <div className="flex justify-center items-center gap-4 mt-8 text-gray-600">
+      <motion.div className="flex justify-center items-center gap-4 mt-8 text-gray-600"
+        initial={{ y: 50, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
+                >
         <img className="h-8" src={assets.user_group} alt="" /> Trusted by 10k+ people
-      </div>
+      </motion.div>
 
       <div className="relative w-full py-6 mt-20 overflow-hidden">
         <div className="absolute left-0 top-0 h-full w-[30%] bg-gradient-to-r from-white to-transparent z-10 rounded-full"></div>

@@ -9,6 +9,7 @@ import RemoveObject from "./pages/RemoveObject"
 import RemoveBackGroud from "./pages/RemoveBackGroud"
 import ReviewResume from "./pages/ReviewResume"
 import WriteArtical from "./pages/WriteArtical"
+import SmoothScroll from "./components/SmoothScoll"
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
 
   return (
     <>
+
+    <SmoothScroll />
       <Routes>
         <Route path="/" element={<Home />} />
 
