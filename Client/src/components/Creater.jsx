@@ -1,4 +1,6 @@
 import { assets } from "../assets/assets";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 
 const Creater = () => {
   const dummyTestimonialData = [
@@ -33,15 +35,23 @@ const Creater = () => {
 
   return (
     <div className="px-4 sm:px-20 xl:px-32 ">
-      <div className="text-center">
+      <motion.div className="text-center"
+       initial={{ y: 150, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.15, type: "spring", stiffness: 320, damping: 70, mass: 1 }}>
         <h2 className="text-slate-700 text-[42px] font-semibold">
           Loved by Creators
         </h2>
         <p className="text-gray-500 max-w-lg mx-auto">
           Don't just take our word for it. Here's what our users are saying.
         </p>
-      </div>
-      <div className="flex flex-wrap mt-10 justify-center">
+      </motion.div>
+      <motion.div className="flex flex-wrap mt-10 justify-center"
+       initial={{ y: 150, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.15, type: "spring", stiffness: 320, damping: 70, mass: 1 }}>
         {dummyTestimonialData.map((testimonial, index) => (
           <div
             key={index}
@@ -81,7 +91,7 @@ const Creater = () => {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };
