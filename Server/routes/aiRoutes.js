@@ -1,6 +1,6 @@
 import express from "express"
-import auth from "../middleware/auth";
-import { generateArticle } from "../controller/aiController";
+import auth from "../middleware/auth.js";
+import { generateArticle } from "../controller/aiController.js";
 
 const aiRouter = express.Router();
 

@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import { clerkMiddleware , requireAuth} from '@clerk/express'
-import aiRouter from "./routes/aiRoutes";
+import aiRouter from "./routes/aiRoutes.js";
 
 
 const app = express();
