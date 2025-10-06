@@ -10,12 +10,21 @@ import RemoveBackGroud from "./pages/RemoveBackGroud"
 import ReviewResume from "./pages/ReviewResume"
 import WriteArtical from "./pages/WriteArtical"
 import SmoothScroll from "./components/SmoothScoll"
+import { useAuth } from "@clerk/clerk-react"
+import { useEffect } from "react"
 
 
 function App() {
- 
 
-  return (
+  const {getToken}  = useAuth();
+
+  useEffect(()=>{
+       getToken().then((token)=>{
+         console.log(token)
+       });
+  },[]);
+
+return (
     <>
 
     <SmoothScroll />
