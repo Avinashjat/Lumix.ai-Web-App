@@ -52,3 +52,48 @@ VALUES (${userId}, ${prompt}, ${content}, 'article')`;
     res.json({success : false ,message: error.message})
   }
 };
+
+
+
+
+export const reviewResume = async (req, res) => {
+  try {
+    // Check if file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    // Parse PDF
+    const dataBuffer = fs.readFileSync(req.file.path);
+    const pdfData = await pdfParse(dataBuffer);
+
+    // Extract text content
+    const resumeText = pdfData.text;
+
+    // Simple example: basic keyword analysis
+    const analysis = analyzeResume(resumeText);
+
+    // Delete uploaded file after processing
+    fs.unlinkSync(req.file.path);
+
+    res.status(200).json({
+      success: true,
+      message: "Resume analyzed successfully",
+      analysis,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+// Basic analysis logic (you can expand this)
+function analyzeResume(text) {
+  const keywords = ["React", "Node", "MongoDB", "Express", "JavaScript"];
+  const matched = keywords.filter((word) => text.includes(word));
+  return {
+    totalWords: text.split(/\s+/).length,
+    foundSkills: matched,
+    summary: `Your resume mentions ${matched.length} of ${keywords.length} key skills.`,
+  };
+}
