@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/express";
 import OpenAI from "openai";
+import sql from "../config/db.js"
 
 const AI = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -32,7 +33,8 @@ export const generateArticle = async (req, res) => {
       max_tokens: length,
     });
 
-    const content = response.choices[0].message.content;
+    const content = response.choices[0].message.content
+
    await sql`INSERT INTO creations (user_id, prompt, content, type)
 VALUES (${userId}, ${prompt}, ${content}, 'article')`;
 
@@ -97,3 +99,6 @@ function analyzeResume(text) {
     summary: `Your resume mentions ${matched.length} of ${keywords.length} key skills.`,
   };
 }
+
+
+

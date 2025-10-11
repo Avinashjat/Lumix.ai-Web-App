@@ -9,7 +9,7 @@ import aiRouter from "./routes/aiRoutes.js";
 const app = express();
 
 // Use environment port or default
-const PORT = process.env.PORT || 3000;
+const PORT = 6467;
 
 // Middlewares
 app.use(cors());

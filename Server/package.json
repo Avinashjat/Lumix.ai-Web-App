@@ -21,7 +21,8 @@
     "express": "^5.1.0",
     "multer": "^2.0.2",
     "openai": "^6.1.0",
-    "pdf-parse": "^2.2.3"
+    "pdf-parse": "^2.2.3",
+    "postgres": "^3.4.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
