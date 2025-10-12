@@ -4,12 +4,15 @@ import "dotenv/config";
 
 import { clerkMiddleware , requireAuth} from '@clerk/express'
 import aiRouter from "./routes/aiRoutes.js";
+import connectCloudinary from "./config/cloudinary.js";
 
 
 const app = express();
 
 // Use environment port or default
 const PORT = 6467;
+
+await connectCloudinary()
 
 // Middlewares
 app.use(cors());
