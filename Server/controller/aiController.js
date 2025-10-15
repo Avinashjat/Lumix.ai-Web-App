@@ -2,6 +2,8 @@ import { clerkClient } from "@clerk/express";
 import OpenAI from "openai";
 import sql from "../config/db.js"
 import axios from "axios";
+import fs from "fs";
+
 
 
 import {v2 as cloudinary} from 'cloudinary'
@@ -250,5 +252,117 @@ VALUES (${userId},${`Removed ${object} from image`} , ${imageUrl}, 'image')`;
   } catch (error) {
     console.log(error.message);
     res.json({success : false ,message: error.message})
+  }
+};
+
+
+
+
+// ✅ Corrected API to Review and Analyze Resume
+export const resumeReview = async (req, res) => {
+  try {
+    const { userId } = await req.auth();
+    const file = req.file; // ✅ Multer gives single file here
+    const plan = req.plan;
+    const free_usage = req.free_usage;
+
+    if (!file) {
+      return res.json({ success: false, message: "No resume file uploaded." });
+    }
+
+    if (plan !== "premium" && free_usage >= 10) {
+      return res.json({
+        success: false,
+        message: "Limit reached. Upgrade to continue.",
+      });
+    }
+
+    let resumeText = "";
+    let resumeUrl = null;
+    const fileType = file.mimetype;
+
+    // ✅ Handle PDF resume
+    if (fileType === "application/pdf") {
+      const dataBuffer = fs.readFileSync(file.path);
+      const data = await pdf(dataBuffer);
+      resumeText = data.text.trim();
+    }
+
+    // ✅ Handle Image resume
+    else if (fileType.startsWith("image/")) {
+      const { secure_url } = await cloudinary.uploader.upload(file.path, {
+        folder: "resumes",
+      });
+      resumeUrl = secure_url;
+    } else {
+      return res.json({
+        success: false,
+        message: "Unsupported file type. Please upload a PDF or image.",
+      });
+    }
+
+    // ✅ AI prompt generation
+    const prompt = resumeText
+      ? `
+You are a professional HR recruiter and resume expert.
+Analyze the following resume text and provide:
+1. A summary of the candidate's background.
+2. Strengths and achievements.
+3. Weaknesses or areas for improvement.
+4. Professional, actionable feedback.
+
+Resume Text:
+${resumeText}
+`
+      : `
+You are a professional HR recruiter and resume expert.
+The candidate's resume is available at ${resumeUrl}.
+Please analyze the resume visually (layout, clarity, presentation, readability)
+and provide:
+1. A summary of the candidate's background.
+2. Strengths.
+3. Weaknesses.
+4. Suggestions for improvement.
+`;
+
+    // ✅ Send prompt to Gemini
+    const response = await AI.chat.completions.create({
+      model: "gemini-2.0-flash",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 600,
+    });
+
+    const analysis = response.choices[0].message.content;
+
+    // ✅ Save to database
+    await sql`
+      INSERT INTO creations (user_id, prompt, content, type)
+      VALUES (${userId}, ${"Resume Review"}, ${analysis}, 'resume-review')
+    `;
+
+    // ✅ Update free usage count
+    if (plan !== "premium") {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: { free_usage: free_usage + 1 },
+      });
+    }
+
+    // ✅ Clean up local file
+    fs.unlinkSync(file.path);
+
+    // ✅ Send response
+    res.json({
+      success: true,
+      content: analysis,
+      resume_url: resumeUrl,
+      file_type: fileType,
+    });
+  } catch (error) {
+    console.error("Resume Review Error:", error.message);
+    res.json({
+      success: false,
+      message: error.message || "Failed to analyze resume.",
+    });
   }
 };
