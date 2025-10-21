@@ -10,23 +10,16 @@ import RemoveBackGroud from "./pages/RemoveBackGroud"
 import ReviewResume from "./pages/ReviewResume"
 import WriteArtical from "./pages/WriteArtical"
 import SmoothScroll from "./components/SmoothScoll"
-import { useAuth } from "@clerk/clerk-react"
-import { useEffect } from "react"
+import { Toaster } from "react-hot-toast"
 
 
 function App() {
 
-  const {getToken}  = useAuth();
 
-  useEffect(()=>{
-       getToken().then((token)=>{
-         console.log(token)
-       });
-  },[]);
 
 return (
     <>
-
+   <Toaster />
     <SmoothScroll />
       <Routes>
         <Route path="/" element={<Home />} />
