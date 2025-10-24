@@ -75,9 +75,16 @@ VALUES (${userId}, ${prompt}, ${content}, 'article')`;
 export const generateBlogTitle = async (req, res) => {
   try {
    const { userId } = await req.auth();
-    const { prompt} = req.body;
+    const { keyword, category } = req.body;
     const plan = req.plan;
     const free_usage = req.free_usage;
+
+      if (!keyword || !category) {
+      return res.json({
+        success: false,
+        message: "Both keyword and category are required.",
+      });
+    }
 
     if (plan !== "premium" && free_usage >= 10) {
       return res.json({
@@ -85,6 +92,13 @@ export const generateBlogTitle = async (req, res) => {
         message: "Limit reached. Upgrade to continue. ",
       });
     }
+
+      const prompt = `
+Generate 10 engaging and SEO-optimized blog titles related to "${keyword}" 
+under the "${category}" category. 
+Titles should be creative, clear, and under 10 words each.
+Only return the list of titles, one per line.
+    `;
 
     const response = await AI.chat.completions.create({
       model: "gemini-2.0-flash",
@@ -94,14 +108,19 @@ export const generateBlogTitle = async (req, res) => {
           content: prompt,
         },
       ],
-      temperature: 0.7,
-      max_tokens: 100,
+      temperature: 0.8,
+      max_tokens: 150,
     });
 
     const content = response.choices[0].message.content
 
+      const titles = content
+      .split("\n")
+      .map((t) => t.replace(/^[\d\-\.\)\s]+/, "").trim()) // remove numbering
+      .filter((t) => t.length > 0);
+
    await sql`INSERT INTO creations (user_id, prompt, content, type)
-VALUES (${userId}, ${prompt}, ${content}, 'blog-title')`;
+VALUES (${userId}, ${prompt},${titles.join("; ")},'blog-title')`;
 
 
    if(plan !== 'premium'){
@@ -112,7 +131,7 @@ VALUES (${userId}, ${prompt}, ${content}, 'blog-title')`;
      })
    }
 
-   res.json({success : true ,content})
+   res.json({success : true ,titles })
 
   } catch (error) {
     console.log(error.message);
