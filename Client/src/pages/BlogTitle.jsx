@@ -1,29 +1,26 @@
-
-
-
-import React, { useState } from 'react';
-import { Hash, Sparkles, Loader2 } from 'lucide-react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { useAuth } from '@clerk/clerk-react';
+import React, { useState } from "react";
+import { Hash, Sparkles, Loader2 } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useAuth } from "@clerk/clerk-react";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 function BlogTitle() {
   const categories = [
-    'General',
-    'Technology',
-    'Business',
-    'Health',
-    'Lifestyle',
-    'Education',
-    'Travel',
-    'Food',
-    'Sport',
+    "General",
+    "Technology",
+    "Business",
+    "Health",
+    "Lifestyle",
+    "Education",
+    "Travel",
+    "Food",
+    "Sport",
   ];
 
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [generatedTitles, setGeneratedTitles] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +30,7 @@ function BlogTitle() {
     e.preventDefault();
 
     if (!input.trim()) {
-      toast.error('Please enter a keyword first.');
+      toast.error("Please enter a keyword first.");
       return;
     }
 
@@ -43,7 +40,7 @@ function BlogTitle() {
 
       const token = await getToken();
       const response = await axios.post(
-        '/api/ai/generate-blog-title',
+        "/api/ai/generate-blog-title",
         {
           keyword: input,
           category: selectedCategory,
@@ -54,12 +51,11 @@ function BlogTitle() {
           },
         }
       );
-
       setGeneratedTitles(response.data?.titles || []);
-      toast.success('Titles generated successfully!');
+      toast.success("Titles generated successfully!");
     } catch (error) {
       console.error(error);
-      toast.error('Failed to generate titles. Please try again.');
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -98,8 +94,8 @@ function BlogTitle() {
               onClick={() => setSelectedCategory(cat)}
               className={`text-xs px-4 py-1 border rounded-full cursor-pointer transition-all ${
                 selectedCategory === cat
-                  ? 'bg-purple-100 text-purple-700 border-purple-300'
-                  : 'text-gray-500 border-gray-300 hover:bg-gray-50'
+                  ? "bg-purple-100 text-purple-700 border-purple-300"
+                  : "text-gray-500 border-gray-300 hover:bg-gray-50"
               }`}
             >
               {cat}
@@ -117,7 +113,7 @@ function BlogTitle() {
           ) : (
             <Hash className="w-5 h-5" />
           )}
-          {loading ? 'Generating...' : 'Generate Titles'}
+          {loading ? "Generating..." : "Generate Titles"}
         </button>
       </form>
 
@@ -151,5 +147,3 @@ function BlogTitle() {
 }
 
 export default BlogTitle;
-
-
