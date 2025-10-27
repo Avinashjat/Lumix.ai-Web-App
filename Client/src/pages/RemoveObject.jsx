@@ -1,68 +1,113 @@
-import { Scissors ,Sparkles } from 'lucide-react';
-import React ,{useState} from 'react'
+import { Scissors, Sparkles, Loader2 } from 'lucide-react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useAuth } from '@clerk/clerk-react';
 
 function RemoveObject() {
+  const [file, setFile] = useState(null);
+  const [objectName, setObjectName] = useState('');
+  const [processedImage, setProcessedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const [input , setInput] = useState(null);
-  const [textArea , setTextArea] = useState('');
-    
-  
-    const onSubmitHandler = async (e) =>{
-      e.preventDefault();
-  
+  const { getToken } = useAuth();
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    if (!file) return toast.error('Please select an image!');
+    if (!objectName) return toast.error('Please enter object name!');
+
+    setLoading(true);
+
+    try {
+      const token = await getToken();
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('object', objectName);
+
+      const { data } = await axios.post(
+        '/api/ai/remove-image-object',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      if (data.success) {
+        setProcessedImage(data.content);
+        toast.success('Object removed successfully!');
+      } else {
+        toast.error(data.message || 'Failed to remove object');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
-    return (
-      <div className='flex flex-wrap items-start gap-4 p-6 text-slate-700 overflow-y-scroll h-full '>
-  
-        {/* {Left col} */}
-        <form onSubmit={onSubmitHandler} action="" className='w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg '>
-          <div className='flex gap-3 items-center'>
-            <Sparkles className="w-6  text-[#4A7AFF] "  />
-            <h1 className='text-xl font-semibold'> Object Removal </h1>
-          </div>
-  
-  
-           <p className='font-medium text-sm mt-6'>Upload image </p>
-  
-           <input type="file" onChange={(e)=> setInput(e.target.value)} value={input}  className='border border-gray-300 p-2 px-3 mt-2 outline-none text-sm w-full rounded-md' placeholder= "Choose File No File Chosen " />
-           <p className='text-gray-500 pt-0 mt-0 text-xs'>Supports JPG, PNG, and other image formats</p>
+  };
 
+  return (
+    <div className="flex flex-wrap items-start gap-4 p-6 text-slate-700 overflow-y-scroll h-full">
 
-       <p className='text-gray-700 mt-6 font-medium  text-sm'>Describe object name to remove</p>
-          <textarea
-          type="text"
-          onChange={(e) => setTextArea(e.target.value)}
-          value={textArea}
+      {/* Left col */}
+      <form onSubmit={onSubmitHandler} className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg">
+        <div className="flex gap-3 items-center">
+          <Sparkles className="w-6 text-[#4A7AFF]" />
+          <h1 className="text-xl font-semibold">Object Removal</h1>
+        </div>
+
+        <p className="font-medium text-sm mt-6">Upload Image</p>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files[0])}
+          accept="image/*"
+          className="border border-gray-300 p-2 px-3 mt-2 outline-none text-sm w-full rounded-md"
+        />
+        <p className="text-gray-500 pt-0 mt-0 text-xs">Supports JPG, PNG, and other image formats</p>
+
+        <p className="text-gray-700 mt-6 font-medium text-sm">Describe object to remove</p>
+        <textarea
+          onChange={(e) => setObjectName(e.target.value)}
+          value={objectName}
           className="border border-gray-300 p-2 px-3 h-20 mt-2 outline-none text-sm w-full rounded-md"
-          placeholder="e.g., watch or spoon. Only single object name"/>
-  
-          <button className='w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#417DF6] to-[#8E37EB]  text-white px-4 py-2 mt-8 text-sm rounded-lg cursor-pointer '>
-            <Scissors className='w-5' />
-              Remove Object
-          </button>
-  
-        </form>
-  
-          {/* {right col} */}
-          <div className='w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg flex flex-col min-h-96 max-h-[600px]'>
-  
-          <div className='flex items-center gap-3'>
-            <Scissors className="w-5 h-5 text-[#4A7AFF] "  />
-            <h1 className='text-xl font-semibold'> Processed Image
- </h1>
-          </div>
-  
-          <div className='flex-1 flex justify-center items-center'>
-            <div className='text-sm flex flex-col items-center gap-5 text-gray-400'>
-              <Scissors className="w-9 h-9  "  />
+          placeholder="e.g., watch or spoon. Only single object name"
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#417DF6] to-[#8E37EB] text-white px-4 py-2 mt-8 text-sm rounded-lg font-medium hover:opacity-90 transition-all disabled:opacity-70"
+        >
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Scissors className="w-5" />}
+          {loading ? 'Processing...' : 'Remove Object'}
+        </button>
+      </form>
+
+      {/* Right col */}
+      <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg flex flex-col min-h-96 max-h-[600px]">
+        <div className="flex items-center gap-3">
+          <Scissors className="w-5 h-5 text-[#4A7AFF]" />
+          <h1 className="text-xl font-semibold">Processed Image</h1>
+        </div>
+
+        <div className="flex-1 flex justify-center items-center">
+          {processedImage ? (
+            <img src={processedImage} alt="Processed" className="max-h-[500px] object-contain" />
+          ) : (
+            <div className="text-sm flex flex-col items-center gap-5 text-gray-400">
+              <Scissors className="w-9 h-9" />
               <p>Upload an image and click "Remove Object" to get started</p>
-              
             </div>
-  </div>
-          </div>
-  
+          )}
+        </div>
       </div>
-    )
-  }
+
+    </div>
+  );
+}
 
 export default RemoveObject;

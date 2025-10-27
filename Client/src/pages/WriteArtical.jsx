@@ -1,5 +1,5 @@
 
-import { Edit, Sparkles } from 'lucide-react'
+import { Edit, Sparkles , Loader2} from 'lucide-react'
 import React, { useState } from 'react'
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
@@ -101,12 +101,8 @@ function WriteArtical() {
           disabled={loading}
           className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-10 text-sm rounded-lg cursor-pointer"
         >
-          {loading ? (
-            <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
-          ) : (
-            <Edit className="w-5" />
-          )}
-          Generate article
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Edit className="w-5" />}
+          {loading ? 'Processing...' : 'Generate article'}
         </button>
       </form>
 
