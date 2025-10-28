@@ -217,37 +217,75 @@ export const removeBackground = async (req, res) => {
 
 // Api to remove Object from Image
 
+// export const removeObject = async (req, res) => {
+//   try {
+//     const { userId } = await req.auth();
+//     const { object } = req.body;
+//     const { image } = req.file;
+//     const plan = req.plan;
+
+//     if (plan !== "premium") {
+//       return res.json({
+//         success: false,
+//         message:
+//           "This feature is available for premium users only. Please upgrade to access it.",
+//       });
+//     }
+
+//     const { public_id } = await cloudinary.uploader.upload(image.path);
+
+//     const imageUrl = cloudinary.url(public_id, {
+//       transformation: [{ effect: `gen_remove:${object}` }],
+//       resource_type: "image",
+//     });
+
+//     await sql`INSERT INTO creations (user_id, prompt, content, type)
+// VALUES (${userId},${`Removed ${object} from image`} , ${imageUrl}, 'image')`;
+
+//     res.json({ success: true, content: imageUrl });
+//   } catch (error) {
+//     console.log(error.message);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
+
+
 export const removeObject = async (req, res) => {
   try {
     const { userId } = await req.auth();
-    const { object } = req.body;
-    const { image } = req.file;
     const plan = req.plan;
+    const object = req.body.object;
+
+    if (!req.file) return res.json({ success: false, message: "No file uploaded" });
+    if (!object) return res.json({ success: false, message: "No object specified" });
 
     if (plan !== "premium") {
       return res.json({
         success: false,
-        message:
-          "This feature is available for premium users only. Please upgrade to access it.",
+        message: "This feature is available for premium users only. Please upgrade to access it.",
       });
     }
 
-    const { public_id } = await cloudinary.uploader.upload(image.path);
+    // Convert buffer to base64 (works with memoryStorage)
+    const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-    const imageUrl = cloudinary.url(public_id, {
+    // Upload image to Cloudinary with object removal effect
+    const { secure_url } = await cloudinary.uploader.upload(base64, {
       transformation: [{ effect: `gen_remove:${object}` }],
-      resource_type: "image",
     });
 
+    // Save to DB
     await sql`INSERT INTO creations (user_id, prompt, content, type)
-VALUES (${userId},${`Removed ${object} from image`} , ${imageUrl}, 'image')`;
+      VALUES (${userId}, ${`Removed ${object} from image`}, ${secure_url}, 'image')`;
 
-    res.json({ success: true, content: imageUrl });
+    res.json({ success: true, content: secure_url });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
+
 
 // Api to review resume from Image
 
