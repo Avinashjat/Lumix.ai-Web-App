@@ -217,74 +217,49 @@ export const removeBackground = async (req, res) => {
 
 // Api to remove Object from Image
 
-// export const removeObject = async (req, res) => {
-//   try {
-//     const { userId } = await req.auth();
-//     const { object } = req.body;
-//     const { image } = req.file;
-//     const plan = req.plan;
-
-//     if (plan !== "premium") {
-//       return res.json({
-//         success: false,
-//         message:
-//           "This feature is available for premium users only. Please upgrade to access it.",
-//       });
-//     }
-
-//     const { public_id } = await cloudinary.uploader.upload(image.path);
-
-//     const imageUrl = cloudinary.url(public_id, {
-//       transformation: [{ effect: `gen_remove:${object}` }],
-//       resource_type: "image",
-//     });
-
-//     await sql`INSERT INTO creations (user_id, prompt, content, type)
-// VALUES (${userId},${`Removed ${object} from image`} , ${imageUrl}, 'image')`;
-
-//     res.json({ success: true, content: imageUrl });
-//   } catch (error) {
-//     console.log(error.message);
-//     res.json({ success: false, message: error.message });
-//   }
-// };
-
-
 
 export const removeObject = async (req, res) => {
   try {
     const { userId } = await req.auth();
     const plan = req.plan;
-    const object = req.body.object;
+    const description = req.body.description?.trim();
 
-    if (!req.file) return res.json({ success: false, message: "No file uploaded" });
-    if (!object) return res.json({ success: false, message: "No object specified" });
+    if (!req.file)
+      return res.json({ success: false, message: "No file uploaded" });
+
+    if (!description)
+      return res.json({
+        success: false,
+        message: "Please describe the object clearly (e.g., 'red apple on left')",
+      });
 
     if (plan !== "premium") {
       return res.json({
         success: false,
-        message: "This feature is available for premium users only. Please upgrade to access it.",
+        message: "This feature is available only to premium users. Please upgrade to use it.",
       });
     }
 
-    // Convert buffer to base64 (works with memoryStorage)
     const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-    // Upload image to Cloudinary with object removal effect
+    // ✅ Works for full descriptive prompts (multi-word)
     const { secure_url } = await cloudinary.uploader.upload(base64, {
-      transformation: [{ effect: `gen_remove:${object}` }],
+      raw_transformation: `e_gen_remove:prompt_${description.replace(/ /g, '_')}`,
     });
 
-    // Save to DB
-    await sql`INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, ${`Removed ${object} from image`}, ${secure_url}, 'image')`;
+    await sql`
+      INSERT INTO creations (user_id, prompt, content, type)
+      VALUES (${userId}, ${`Removed: ${description}`}, ${secure_url}, 'image')
+    `;
 
     res.json({ success: true, content: secure_url });
+
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
+
 
 
 // Api to review resume from Image
@@ -295,81 +270,66 @@ export const resumeReview = async (req, res) => {
     const resume = req.file;
     const plan = req.plan;
 
-    // Basic validation
     if (!resume) {
-      return res.json({ success: false, message: "No resume file uploaded." });
+      return res.json({ success: false, message: "Please upload a resume file." });
     }
 
     if (plan !== "premium") {
       return res.json({
         success: false,
-        message:
-          "This feature is available for premium users only. Please upgrade to access it.",
+        message: "This feature is available for premium users only.",
       });
     }
 
-    // File size limit 5MB
     if (resume.size > 5 * 1024 * 1024) {
       return res.json({
         success: false,
-        message: "File size exceeds 5MB limit.",
+        message: "File size must be less than 5MB.",
       });
     }
 
-    // Read file and extract text
+    // Extract text from PDF
     const dataBuffer = fs.readFileSync(resume.path);
     const pdfData = await pdf(dataBuffer);
     const resumeText = pdfData.text;
 
-    if (!resumeText || resumeText.trim().length < 100) {
-      return res.json({
-        success: false,
-        message: "Invalid or empty resume file.",
-      });
+    if (!resumeText || resumeText.trim().length < 50) {
+      return res.json({ success: false, message: "Unable to read text from resume." });
     }
 
-    // 🧠 Generate analysis prompt
     const prompt = `
-You are an expert HR and career consultant. Review the following resume text and provide:
-1. A summary of the candidate's profile.
-2. Strengths and achievements.
-3. Weaknesses or areas for improvement.
-4. Suggestions to enhance the resume for job applications.
-5. A professional score out of 10 based on clarity, structure, and relevance.
+You are an expert HR consultant. Analyze the resume in detail and provide:
+1. Candidate Summary
+2. Strengths and Achievements
+3. Weaknesses / Areas to Improve
+4. Specific Suggestions to Improve the Resume
+5. Professional Score (0-10)
 
-Resume Content:
+Resume:
 ${resumeText}
-    `;
+`;
 
     const response = await AI.chat.completions.create({
       model: "gemini-2.0-flash",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.6,
+      max_tokens: 1200,
     });
 
     const content = response.choices[0].message.content;
 
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
-      VALUES (${userId}, "Resume Review", ${content}, "resume-review");
+      VALUES (${userId}, 'Resume Review', ${content}, 'resume-review')
     `;
 
-    res.json({
+    return res.json({
       success: true,
-      message: "Resume analyzed successfully.",
+      message: "Resume reviewed successfully.",
       content,
     });
   } catch (error) {
-    console.error("Resume Review Error:", error.message);
-    res.json({
-      success: false,
-      message: error.message || "Failed to analyze resume.",
-    });
+    console.error("Resume Review Error:", error);
+    return res.json({ success: false, message: "Something went wrong." });
   }
 };
