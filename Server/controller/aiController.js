@@ -2,10 +2,12 @@ import { clerkClient } from "@clerk/express";
 import OpenAI from "openai";
 import sql from "../config/db.js";
 import axios from "axios";
-import fs from "fs";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const pdf = require("pdf-parse");
+import fs from "fs";
+
+
 
 import { v2 as cloudinary } from "cloudinary";
 
@@ -264,46 +266,57 @@ export const removeObject = async (req, res) => {
 
 // Api to review resume from Image
 
+
 export const resumeReview = async (req, res) => {
   try {
     const { userId } = await req.auth();
-    const resume = req.file;
-    const plan = req.plan;
 
-    if (!resume) {
-      return res.json({ success: false, message: "Please upload a resume file." });
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ success: false, message: "Please upload a resume file." });
     }
 
-    if (plan !== "premium") {
-      return res.json({
-        success: false,
-        message: "This feature is available for premium users only.",
-      });
+   
+    if (file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({ success: false, message: "File size must be less than 5MB." });
     }
 
-    if (resume.size > 5 * 1024 * 1024) {
-      return res.json({
-        success: false,
-        message: "File size must be less than 5MB.",
-      });
+    let buffer;
+    if (file.buffer && Buffer.isBuffer(file.buffer)) {
+      buffer = file.buffer;
+    } else if (file.path) {
+      // ensure file exists
+      const filePath = path.resolve(file.path);
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ success: false, message: "Uploaded file not found on server." });
+      }
+      buffer = fs.readFileSync(filePath);
+    } else {
+      return res.status(400).json({ success: false, message: "Uploaded file is missing buffer and path." });
     }
 
-    // Extract text from PDF
-    const dataBuffer = fs.readFileSync(resume.path);
-    const pdfData = await pdf(dataBuffer);
-    const resumeText = pdfData.text;
-
-    if (!resumeText || resumeText.trim().length < 50) {
-      return res.json({ success: false, message: "Unable to read text from resume." });
+    if (typeof pdfParseFn !== "function") {
+      console.error("pdfParseFn is not a function", typeof pdfParseFn, Object.keys(pdfParseModule || {}));
+      return res.status(500).json({ success: false, message: "Server PDF parser not available." });
     }
 
+    // parse PDF (pdf-parse supports Buffer)
+    const pdfData = await pdfParseFn(buffer);
+    const resumeText = (pdfData && pdfData.text) ? String(pdfData.text).trim() : "";
+
+    if (!resumeText || resumeText.length < 50) {
+      return res.status(400).json({ success: false, message: "Unable to extract readable text from the resume." });
+    }
+
+    // Build prompt and call AI (AI must be defined/initialized in this file as in your original code)
     const prompt = `
-You are an expert HR consultant. Analyze the resume in detail and provide:
+You are an experienced HR professional. Review the resume thoroughly and provide:
+
 1. Candidate Summary
 2. Strengths and Achievements
-3. Weaknesses / Areas to Improve
-4. Specific Suggestions to Improve the Resume
-5. Professional Score (0-10)
+3. Weaknesses / Areas for Improvement
+4. Suggestions to Improve Overall Resume Quality
+5. Professional Score (0–10)
 
 Resume:
 ${resumeText}
@@ -316,20 +329,19 @@ ${resumeText}
       max_tokens: 1200,
     });
 
-    const content = response.choices[0].message.content;
+    const content = response?.choices?.[0]?.message?.content ?? "";
 
+    // Save history (your sql instance)
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, 'Resume Review', ${content}, 'resume-review')
     `;
 
-    return res.json({
-      success: true,
-      message: "Resume reviewed successfully.",
-      content,
-    });
+    return res.json({ success: true, message: "Resume reviewed successfully.", content });
   } catch (error) {
     console.error("Resume Review Error:", error);
-    return res.json({ success: false, message: "Something went wrong." });
+    return res.status(500).json({ success: false, message: "Internal server error." });
   }
 };
+
+
