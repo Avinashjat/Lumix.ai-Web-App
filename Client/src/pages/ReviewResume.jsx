@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
+import Markdown from 'react-markdown';
 
 function ReviewResume() {
   const [file, setFile] = useState(null);
@@ -13,14 +14,14 @@ function ReviewResume() {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (!file) return toast.error("Please upload a PDF resume");
+    if (!file) return toast.error("Please upload a PDF resume.");
 
     setLoading(true);
+
     try {
       const token = await getToken();
-
       const formData = new FormData();
-      formData.append("resume", file);
+      formData.append("resume", file); // ✅ field name must match backend
 
       const { data } = await axios.post("/api/ai/resume-review", formData, {
         headers: {
@@ -33,11 +34,11 @@ function ReviewResume() {
         setResult(data.content);
         toast.success("Resume Reviewed Successfully");
       } else {
-        toast.error(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong.");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Request failed");
+      toast.error("Request Failed.");
     } finally {
       setLoading(false);
     }
@@ -70,14 +71,14 @@ function ReviewResume() {
         </button>
       </form>
 
-      <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg min-h-96">
+      <div className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg min-h-96 max-h-[550px] overflow-y-auto">
         <div className="flex items-center gap-3">
           <FileText className="w-5 h-5 text-[#00DA83]" />
           <h1 className="text-xl font-semibold">Analysis Result</h1>
         </div>
 
-        <div className="mt-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
-          {result ? result : "Upload a resume to see analysis"}
+        <div className="mt-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto">
+          {result ? <Markdown>{String(result)}</Markdown> : "Upload a resume to see analysis."}
         </div>
       </div>
     </div>
