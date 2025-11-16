@@ -9,6 +9,12 @@ import userRouter from "./routes/userRoutes.js";
 
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173",  // Frontend URL
+    credentials: true,
+  })
+);
 
 // Use environment port or default
 const PORT = 6467;
@@ -26,7 +32,7 @@ app.get("/", (req, res) => {
   res.send("✅ Server is live and running!");
 });
 
-app.use(requireAuth())
+// app.use(requireAuth())
 
 app.use('/api/ai' , aiRouter)
 app.use('/api/user' , userRouter)

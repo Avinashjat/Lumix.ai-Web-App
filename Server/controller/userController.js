@@ -7,11 +7,16 @@ export const getUserCreations = async (req, res) => {
   try {
     const { userId } = await req.auth();
 
+    console.log("➡️ Clerk userId:", userId);  // <--- ADD THIS
+
     const creations = await sql`
       SELECT * FROM creations
       WHERE user_id = ${userId}
       ORDER BY created_at DESC
+      LIMIT 10
     `;
+
+    console.log("Queried Creations:", creations); // <--- ADD THIS
 
     res.json({ success: true, creations });
   } catch (error) {
@@ -19,6 +24,7 @@ export const getUserCreations = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
 
 
 

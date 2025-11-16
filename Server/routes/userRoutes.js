@@ -1,11 +1,12 @@
 import express from "express"
 import auth from "../middleware/auth.js";
+import { requireAuth } from "@clerk/express";
 
 import { getPublishedCreations, getUserCreations, toggleLikeCreations } from "../controller/userController.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/get-user-creations" , auth ,getUserCreations);
+userRouter.get("/get-user-creations" ,requireAuth ,getUserCreations);
 userRouter.get("/get-published-creations" , auth ,getPublishedCreations);
 userRouter.post("/toggle-likes-creations" , auth ,toggleLikeCreations);
 
