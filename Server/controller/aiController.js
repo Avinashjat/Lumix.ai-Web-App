@@ -34,7 +34,7 @@ export const generateArticle = async (req, res) => {
     }
 
     const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       messages: [
         {
           role: "user",
@@ -42,7 +42,7 @@ export const generateArticle = async (req, res) => {
         },
       ],
       temperature: 0.7,
-      max_tokens: length,
+      max_tokens: length + 3000,
     });
 
     const content = response.choices[0].message.content;
@@ -96,7 +96,7 @@ Only return the list of titles, one per line.
     `;
 
     const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       messages: [
         {
           role: "user",
@@ -104,7 +104,7 @@ Only return the list of titles, one per line.
         },
       ],
       temperature: 0.8,
-      max_tokens: 150,
+      max_tokens: 1000,
     });
 
     const content = response.choices[0].message.content;
@@ -325,10 +325,10 @@ ${resumeText}
 
 
     const response = await AI.chat.completions.create({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.6,
-      max_tokens: 1200
+      max_tokens:4000
     });
 
     const content = response?.choices?.[0]?.message?.content || "";
