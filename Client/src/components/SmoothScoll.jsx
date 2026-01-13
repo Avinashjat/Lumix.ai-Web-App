@@ -1,14 +1,13 @@
-
 import { useEffect } from "react";
 import Lenis from "@studio-freight/lenis";
 
 export default function SmoothScroll() {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2, 
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // ease-out
-      smoothWheel: true, 
-      smoothTouch: false, 
+      duration: 1.1,
+      easing: (t) => 1 - Math.pow(1 - t, 3), // smooth but natural
+      smoothWheel: true,
+      smoothTouch: true,
     });
 
     function raf(time) {
@@ -23,5 +22,5 @@ export default function SmoothScroll() {
     };
   }, []);
 
-  return null; // nothing rendered
+  return null;
 }

@@ -7,38 +7,50 @@ import {SignIn, useUser } from '@clerk/clerk-react';
 
 function Layout() {
   const navigate = useNavigate();
-
-  const [sidebar , setSidebar] = useState(false);
-  const {user}= useUser();
+  const [sidebar, setSidebar] = useState(false);
+  const { user } = useUser();
 
   return user ? (
-    <div className='h-screen flex flex-col justify-start items-start'>
+    <div className="min-h-screen flex flex-col">
 
-      <nav className='w-full h-16  px-10  flex justify-between border-b border-gray-200'>
-        <img className='cursor-pointer' src={assets.logo} alt="Logo" onClick={()=>navigate('/')}  />
-        {
-          sidebar ? <X className=' w-7 h-7 mt-5 text-gray-600 sm:hidden' onClick={()=>setSidebar(false)} />
-           : <Menu className='w-7 h-7 mt-5  text-gray-600 sm:hidden' onClick={()=>setSidebar(true)} />
+      <nav className="w-full h-16 px-10 flex justify-between border-b border-gray-200 bg-white sticky top-0 z-50">
+        <img
+          className="cursor-pointer"
+          src={assets.logo}
+          alt="Logo"
+          onClick={() => navigate("/")}
+        />
 
-        }
+        {sidebar ? (
+          <X
+            className="w-7 h-7 mt-5 text-gray-600 sm:hidden"
+            onClick={() => setSidebar(false)}
+          />
+        ) : (
+          <Menu
+            className="w-7 h-7 mt-5 text-gray-600 sm:hidden"
+            onClick={() => setSidebar(true)}
+          />
+        )}
       </nav>
-      <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
-        <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
-        <div className=' flex-1 h-full bg-gray-100 overflow-y-auto'>
-             <Outlet />
 
-        </div>
+   
+      <div className="flex flex-1">
+
+      
+        <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
+
+        <main className="flex-1 bg-gray-100">
+          <Outlet />
+        </main>
 
       </div>
- 
-   
     </div>
-  ) :(
-    <div className='h-screen flex justify-center items-center'>
+  ) : (
+    <div className="h-screen flex justify-center items-center">
       <SignIn />
-
     </div>
-  )
+  );
 }
 
-export default Layout
+export default Layout;
