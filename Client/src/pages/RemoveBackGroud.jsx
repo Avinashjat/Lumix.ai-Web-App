@@ -77,7 +77,7 @@ function RemoveBackGroud() {
       </form>
 
       {/* Right col */}
-      <div className='w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg flex flex-col min-h-96 max-h-[600px]'>
+      <div className='w-full max-w-xl p-4 bg-white border border-gray-200 rounded-lg flex flex-col min-h-96 max-h-[600px]'>
         <div className='flex items-center gap-3'>
           <Eraser className="w-5 h-5 text-[#FF4938]" />
           <h1 className='text-xl font-semibold'>Processed Image</h1>

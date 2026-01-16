@@ -118,7 +118,7 @@ function BlogTitle() {
       </form>
 
       {/* Right Column */}
-      <div className="w-full max-w-lg p-5 bg-white border border-gray-200 rounded-xl shadow-sm min-h-96 max-h-[600px] overflow-y-auto">
+      <div className="w-full max-w-xl p-5 bg-white border border-gray-200 rounded-xl shadow-sm min-h-96 max-h-[600px] overflow-y-auto">
         <div className="flex items-center gap-3 mb-4">
           <Hash className="w-5 h-5 text-purple-700" />
           <h1 className="text-xl font-semibold">Generated Titles</h1>
