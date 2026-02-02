@@ -9,50 +9,41 @@ import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 
-// Allowed frontend origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://lumix-ai-oxa4.onrender.com",
 ];
 
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (Postman, server-to-server)
+    origin(origin, callback) {
       if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// Middlewares
 app.use(express.json());
 app.use(clerkMiddleware());
 
-// Cloudinary
-await connectCloudinary();
-
-// Routes
 app.get("/", (req, res) => {
-  res.send("✅ Server is live and running!");
+  res.send(" Server is live and running!");
 });
 
 app.use("/api/ai", aiRouter);
 app.use("/api/user", userRouter);
 
-// Port
-const PORT = process.env.PORT || 6467;
+const PORT = process.env.PORT || 3000;
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT}`);
+
+  try {
+    await connectCloudinary();
+    console.log(" Cloudinary connected");
+  } catch (err) {
+    console.error(" Cloudinary connection failed:", err.message);
+  }
 });
