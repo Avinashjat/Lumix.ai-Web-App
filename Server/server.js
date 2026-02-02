@@ -35,15 +35,16 @@ app.get("/", (req, res) => {
 app.use("/api/ai", aiRouter);
 app.use("/api/user", userRouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
-app.listen(PORT, async () => {
+app.listen(PORT, "0.0.0.0", async () => {
   console.log(`Server running on port ${PORT}`);
 
   try {
     await connectCloudinary();
-    console.log(" Cloudinary connected");
+    console.log("Cloudinary connected");
   } catch (err) {
-    console.error(" Cloudinary connection failed:", err.message);
+    console.error("Cloudinary connection failed:", err.message);
   }
 });
+
