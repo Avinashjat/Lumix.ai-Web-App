@@ -1,14 +1,10 @@
 import { clerkClient } from "@clerk/express";
 import OpenAI from "openai";
 import sql from "../config/db.js";
+
 import axios from "axios";
-// import { createRequire } from "module";
-// const require = createRequire(import.meta.url);
-// const pdf = require("pdf-parse");
-// import fs from "fs";
+
 import { extractTextFromPDF } from "../config/pdfReader.js";
-
-
 
 import { v2 as cloudinary } from "cloudinary";
 
@@ -133,7 +129,6 @@ VALUES (${userId}, ${prompt},${titles.join("; ")},'blog-title')`;
 };
 
 // Api to generate image from text prompt
-
 export const generateImage = async (req, res) => {
   try {
     const { userId } = await req.auth();
@@ -160,12 +155,12 @@ export const generateImage = async (req, res) => {
           ...formData.getHeaders?.(),
         },
         responseType: "arraybuffer",
-      }
+      },
     );
 
     const base64Image = `data:image/png;base64,${Buffer.from(
       data,
-      "binary"
+      "binary",
     ).toString("base64")}`;
 
     const { secure_url } = await cloudinary.uploader.upload(base64Image);
@@ -200,7 +195,7 @@ export const removeBackground = async (req, res) => {
 
     // Convert buffer to base64
     const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
-      "base64"
+      "base64",
     )}`;
 
     // Upload to Cloudinary
@@ -220,7 +215,6 @@ export const removeBackground = async (req, res) => {
 
 // Api to remove Object from Image
 
-
 export const removeObject = async (req, res) => {
   try {
     const { userId } = await req.auth();
@@ -233,21 +227,23 @@ export const removeObject = async (req, res) => {
     if (!description)
       return res.json({
         success: false,
-        message: "Please describe the object clearly (e.g., 'red apple on left')",
+        message:
+          "Please describe the object clearly (e.g., 'red apple on left')",
       });
 
     if (plan !== "premium") {
       return res.json({
         success: false,
-        message: "This feature is available only to premium users. Please upgrade to use it.",
+        message:
+          "This feature is available only to premium users. Please upgrade to use it.",
       });
     }
 
-    const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    const base64 = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
     // ✅ Works for full descriptive prompts (multi-word)
     const { secure_url } = await cloudinary.uploader.upload(base64, {
-      raw_transformation: `e_gen_remove:prompt_${description.replace(/ /g, '_')}`,
+      raw_transformation: `e_gen_remove:prompt_${description.replace(/ /g, "_")}`,
     });
 
     await sql`
@@ -256,14 +252,11 @@ export const removeObject = async (req, res) => {
     `;
 
     res.json({ success: true, content: secure_url });
-
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
 };
-
-
 
 // Api to review resume from Image
 export const resumeReview = async (req, res) => {
@@ -274,21 +267,22 @@ export const resumeReview = async (req, res) => {
     if (!file) {
       return res.status(400).json({
         success: false,
-        message: "Please upload a resume file."
+        message: "Please upload a resume file.",
       });
     }
 
     if (file.size > 5 * 1024 * 1024) {
       return res.status(400).json({
         success: false,
-        message: "File size must be less than 5MB."
+        message: "File size must be less than 5MB.",
       });
     }
 
     // ✅ Obtain buffer safely (supports both memory & disk storage modes)
-    const buffer = file.buffer && Buffer.isBuffer(file.buffer)
-      ? file.buffer
-      : fs.readFileSync(file.path);
+    const buffer =
+      file.buffer && Buffer.isBuffer(file.buffer)
+        ? file.buffer
+        : fs.readFileSync(file.path);
 
     // ✅ Extract text
     const resumeText = await extractTextFromPDF(buffer);
@@ -296,12 +290,12 @@ export const resumeReview = async (req, res) => {
     if (!resumeText || resumeText.length < 50) {
       return res.status(400).json({
         success: false,
-        message: "Unable to extract readable text from the resume."
+        message: "Unable to extract readable text from the resume.",
       });
     }
 
     // ✅ AI Prompt
-const prompt = `
+    const prompt = `
 You are an experienced HR professional. Review the resume and respond ONLY in the following **structured, clean, and readable Markdown format**:
 
 ## Candidate Summary
@@ -323,12 +317,11 @@ Resume text:
 ${resumeText}
 `;
 
-
     const response = await AI.chat.completions.create({
       model: "gemini-2.5-flash",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.6,
-      max_tokens:4000
+      max_tokens: 4000,
     });
 
     const content = response?.choices?.[0]?.message?.content || "";
@@ -342,14 +335,13 @@ ${resumeText}
     return res.json({
       success: true,
       message: "Resume reviewed successfully.",
-      content
+      content,
     });
-
   } catch (error) {
     console.error("Resume Review Error:", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error."
+      message: "Internal server error.",
     });
   }
 };
