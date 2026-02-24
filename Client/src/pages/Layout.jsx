@@ -1,9 +1,9 @@
-import React ,{useState} from 'react'
-import { Outlet , useNavigate } from 'react-router-dom'
-import {assets} from '../assets/assets'
-import {X, Menu} from 'lucide-react'
-import Sidebar from '../components/Sidebar';
-import {SignIn, useUser } from '@clerk/clerk-react';
+import React, { useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { assets } from "../assets/assets";
+import { X, Menu } from "lucide-react";
+import Sidebar from "../components/Sidebar";
+import { SignIn, useUser } from "@clerk/clerk-react";
 
 function Layout() {
   const navigate = useNavigate();
@@ -12,14 +12,13 @@ function Layout() {
 
   return user ? (
     <div className="min-h-screen flex flex-col">
-
       <nav className="w-full h-16 px-10 flex justify-between border-b border-gray-200 bg-white sticky top-0 z-50">
-        <img
-          className="cursor-pointer"
-          src={assets.logo}
-          alt="Logo"
-          onClick={() => navigate("/")}
-        />
+        <div className="flex cursor-pointer" onClick={() => navigate("/")}>
+          <img className="w-12 sm:w-20 " src={assets.logo} alt="logo" />
+          <span className="pt-5 text-4xl font-bold bg-gradient-to-r from-[#3C81F6] to-[#9234EA] bg-clip-text text-transparent">
+            MIX
+          </span>
+        </div>
 
         {sidebar ? (
           <X
@@ -34,16 +33,12 @@ function Layout() {
         )}
       </nav>
 
-   
       <div className="flex flex-1">
-
-      
         <Sidebar sidebar={sidebar} setSidebar={setSidebar} />
 
         <main className="flex-1 bg-gray-100">
           <Outlet />
         </main>
-
       </div>
     </div>
   ) : (

@@ -1,7 +1,7 @@
 
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
-// eslint-disable-next-line no-unused-vars
+
 import { motion } from "framer-motion";
 
 function Hero() {

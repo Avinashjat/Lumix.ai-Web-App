@@ -1,25 +1,23 @@
-
-import { Edit, Sparkles , Loader2} from 'lucide-react'
-import React, { useState } from 'react'
-import axios from 'axios';
-import { useAuth } from '@clerk/clerk-react';
-import toast from 'react-hot-toast';
-import Markdown from 'react-markdown';
+import { Edit, Sparkles, Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
+import toast from "react-hot-toast";
+import Markdown from "react-markdown";
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
 
 function WriteArtical() {
-
   const articleLength = [
-    { length: 800, text: 'Short (500–800 words)' },
-    { length: 1200, text: 'Medium (800–1200 words)' },
-    { length: 1600, text: 'Long (1200+ words)' }
+    { length: 800, text: "Short (500–800 words)" },
+    { length: 1200, text: "Medium (800–1200 words)" },
+    { length: 1600, text: "Long (1200+ words)" },
   ];
 
   const [selectedLength, setSelectedLength] = useState(articleLength[0]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
 
   const { getToken } = useAuth();
 
@@ -31,20 +29,20 @@ function WriteArtical() {
       const prompt = `Write an article about ${input} in ${selectedLength.text}.`;
 
       const { data } = await axios.post(
-        '/api/ai/generate-article',
+        "/api/ai/generate-article",
         { prompt, length: selectedLength.length },
         {
           headers: {
             Authorization: `Bearer ${await getToken()}`,
           },
-        }
+        },
       );
 
       if (data.success) {
         // ✅ Ensure content is always a clean string
         const cleanContent =
-          typeof data.content === 'string'
-            ? data.content.trim().replace(/^\uFEFF/, '') // remove BOM if present
+          typeof data.content === "string"
+            ? data.content.trim().replace(/^\uFEFF/, "") // remove BOM if present
             : JSON.stringify(data.content, null, 2);
         setContent(cleanContent);
       } else {
@@ -88,8 +86,8 @@ function WriteArtical() {
               onClick={() => setSelectedLength(item)}
               className={`text-xs px-4 py-1 border rounded-full cursor-pointer ${
                 selectedLength.text === item.text
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-500 border-gray-300'
+                  ? "bg-blue-100 text-blue-700"
+                  : "text-gray-500 border-gray-300"
               }`}
             >
               {item.text}
@@ -101,8 +99,12 @@ function WriteArtical() {
           disabled={loading}
           className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#226BFF] to-[#65ADFF] text-white px-4 py-2 mt-10 text-sm rounded-lg cursor-pointer"
         >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Edit className="w-5" />}
-          {loading ? 'Processing...' : 'Generate article'}
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <Edit className="w-5" />
+          )}
+          {loading ? "Processing..." : "Generate article"}
         </button>
       </form>
 
@@ -123,8 +125,7 @@ function WriteArtical() {
         ) : (
           <div className="mt-3 h-full overflow-y-auto text-sm text-slate-600">
             <div className="reset-tw prose max-w-none">
-             
-              <Markdown>{String(content || '')}</Markdown>
+              <Markdown>{String(content || "")}</Markdown>
             </div>
           </div>
         )}
@@ -134,4 +135,3 @@ function WriteArtical() {
 }
 
 export default WriteArtical;
-

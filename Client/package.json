@@ -13,7 +13,7 @@
     "@clerk/clerk-react": "^5.47.0",
     "@studio-freight/lenis": "^1.0.42",
     "axios": "^1.12.2",
-    "framer-motion": "^12.23.22",
+    "framer-motion": "^12.34.2",
     "install": "^0.13.0",
     "lucide-react": "^0.544.0",
     "pdf-parse": "^2.4.3",
