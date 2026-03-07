@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/clerk-react";
-import Markdown from 'react-markdown';
+import Markdown from "react-markdown";
 
 function ReviewResume() {
   const [file, setFile] = useState(null);
@@ -46,8 +46,10 @@ function ReviewResume() {
 
   return (
     <div className="flex flex-wrap items-start gap-4 p-6 text-slate-700 overflow-y-scroll h-full">
-
-      <form onSubmit={onSubmitHandler} className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg">
+      <form
+        onSubmit={onSubmitHandler}
+        className="w-full max-w-lg p-4 bg-white border border-gray-200 rounded-lg"
+      >
         <div className="flex gap-3 items-center">
           <Sparkles className="w-6 text-[#00DA83]" />
           <h1 className="text-xl font-semibold">Resume Review</h1>
@@ -66,7 +68,11 @@ function ReviewResume() {
           disabled={loading}
           className="w-full flex justify-center items-center gap-2 bg-gradient-to-r from-[#00DA83] to-[#009BB3] text-white px-4 py-2 mt-8 text-sm rounded-lg font-medium hover:opacity-90 transition-all disabled:opacity-70"
         >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5" />}
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <FileText className="w-5" />
+          )}
           {loading ? "Analyzing..." : "Review Resume"}
         </button>
       </form>
@@ -78,7 +84,11 @@ function ReviewResume() {
         </div>
 
         <div className="mt-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed overflow-y-auto">
-          {result ? <Markdown>{String(result)}</Markdown> : "Upload a resume to see analysis."}
+          {result ? (
+            <Markdown>{String(result)}</Markdown>
+          ) : (
+            "Upload a resume to see analysis."
+          )}
         </div>
       </div>
     </div>

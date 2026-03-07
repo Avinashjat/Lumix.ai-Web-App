@@ -1,4 +1,4 @@
-import { ImageIcon, Sparkles , Loader2 } from "lucide-react";
+import { ImageIcon, Sparkles, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
@@ -36,7 +36,7 @@ function GenerateImage() {
       const token = await getToken();
 
       const prompt = `Generate a ${selectedStyle} style image for the following description: ${input}`;
-      
+
       const { data } = await axios.post(
         "/api/ai/generate-image",
         {
@@ -47,7 +47,7 @@ function GenerateImage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (data.success) {
