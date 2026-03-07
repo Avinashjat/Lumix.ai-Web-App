@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { assets } from "../assets/assets";
 const Footer = () => {
@@ -33,9 +32,9 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-sm/7 mt-6">
-              PrebuiltUI is a free and open-source UI component library with
-              over 300+ beautifully crafted, customizable components built with
-              Tailwind CSS.
+              Lumix AI is a modern platform that brings powerful AI tools and
+              creative solutions together, helping users generate content,
+              design visuals, and streamline workflows with ease.
             </p>
             <div className="flex items-center gap-3 mt-4">
               {/* Instagram */}
@@ -106,8 +105,9 @@ const Footer = () => {
           </motion.div>
         </div>
         <p className="py-4 text-center border-t mt-6 border-slate-200">
-          Copyright 2025 © <a href="https://prebuiltui.com">PrebuiltUI</a> All
-          Right Reserved.
+          Copyright 2026 ©{" "}
+          <a href="https://avinash-portfolio-one.vercel.app/">Avinash-Jat</a>{" "}
+          All Right Reserved.
         </p>
       </footer>
     </>
