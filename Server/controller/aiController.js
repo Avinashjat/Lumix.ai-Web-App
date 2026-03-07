@@ -1,12 +1,9 @@
 import { clerkClient } from "@clerk/express";
 import OpenAI from "openai";
 import sql from "../config/db.js";
-
+import cloudinary from "../config/cloudinary.js";
 import axios from "axios";
-
 import { extractTextFromPDF } from "../config/pdfReader.js";
-
-import { v2 as cloudinary } from "cloudinary";
 
 const AI = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -129,6 +126,7 @@ VALUES (${userId}, ${prompt},${titles.join("; ")},'blog-title')`;
 };
 
 // Api to generate image from text prompt
+
 export const generateImage = async (req, res) => {
   try {
     const { userId } = await req.auth();
