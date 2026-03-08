@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import { clerkMiddleware } from "@clerk/express";
+import chatRoutes from "./routes/chatRoutes.js";
 
 import aiRouter from "./routes/aiRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -25,6 +26,7 @@ app.use(clerkMiddleware());
 // ✅ JSON only where needed
 app.use("/api/ai", express.json(), aiRouter);
 app.use("/api/user", express.json(), userRouter);
+app.use("/api/ai", express.json(), chatRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is live and running!");

@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import sql from "../config/db.js";
 import cloudinary from "../config/cloudinary.js";
 import axios from "axios";
+
 import { extractTextFromPDF } from "../config/pdfReader.js";
 
 const AI = new OpenAI({
@@ -41,7 +42,7 @@ export const generateArticle = async (req, res) => {
     const content = response.choices[0].message.content;
 
     await sql`INSERT INTO creations (user_id, prompt, content, type)
-VALUES (${userId}, ${prompt}, ${content}, 'article')`;
+    VALUES (${userId}, ${prompt}, ${content}, 'article')`;
 
     if (plan !== "premium") {
       await clerkClient.users.updateUserMetadata(userId, {
@@ -49,7 +50,7 @@ VALUES (${userId}, ${prompt}, ${content}, 'article')`;
           free_usage: free_usage + 1,
         },
       });
-    }
+    } 
 
     res.json({ success: true, content });
   } catch (error) {
