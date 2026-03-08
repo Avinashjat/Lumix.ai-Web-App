@@ -1,4 +1,3 @@
-
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 
@@ -99,8 +98,11 @@ function Hero() {
         >
           Start creating now
         </button>
-        <button className="bg-white px-10 py-3 border border-gray-300 rounded-lg text-black hover:scale-105 active:scale-95 transition">
-          Watch demo
+        <button
+          onClick={() => Navigate("/chat")}
+          className="bg-white px-10 py-3 border border-gray-300 rounded-lg text-black hover:scale-105 active:scale-95 transition"
+        >
+          AI Chat
         </button>
       </motion.div>
 

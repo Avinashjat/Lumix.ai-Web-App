@@ -1,26 +1,23 @@
-import {Route , Routes } from "react-router-dom"
-import Home from "./pages/Home"
-import Layout from "./pages/Layout"
-import BlogTitle from "./pages/BlogTitle"
-import Community from "./pages/Community"
-import DashBoard from "./pages/DashBoard"
-import GenerateImage from "./pages/GenerateImage"
-import RemoveObject from "./pages/RemoveObject"
-import RemoveBackGroud from "./pages/RemoveBackGroud"
-import ReviewResume from "./pages/ReviewResume"
-import WriteArtical from "./pages/WriteArtical"
-import SmoothScroll from "./components/SmoothScoll"
-import { Toaster } from "react-hot-toast"
-
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Layout from "./pages/Layout";
+import BlogTitle from "./pages/BlogTitle";
+import Community from "./pages/Community";
+import DashBoard from "./pages/DashBoard";
+import GenerateImage from "./pages/GenerateImage";
+import RemoveObject from "./pages/RemoveObject";
+import RemoveBackGroud from "./pages/RemoveBackGroud";
+import ReviewResume from "./pages/ReviewResume";
+import WriteArtical from "./pages/WriteArtical";
+import SmoothScroll from "./components/SmoothScoll";
+import { Toaster } from "react-hot-toast";
+import Chat from "./pages/Chat";
 
 function App() {
-
-
-
-return (
+  return (
     <>
-   <Toaster />
-    <SmoothScroll />
+      <Toaster />
+      <SmoothScroll />
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -38,9 +35,11 @@ return (
           <Route path="review-resume" element={<ReviewResume />} />
           <Route path="write-article" element={<WriteArtical />} />
         </Route>
-      </Routes>     
+
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
