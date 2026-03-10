@@ -13,9 +13,9 @@ https://your-live-demo-link.com
 
 ## Project Snapshot
 
-![Home Page](Client/src/assets/ai_gen_img_1.png)
+![Home Page](Client/public/demoImg1.png)
 
-![AI Image Generator](Client/src/assets/ai_gen_img_2.png)
+![AI Image Generator](Client/public/demoImg1.png)
 
 
 ---
