@@ -15,7 +15,7 @@ https://your-live-demo-link.com
 
 ![Home Page](Client/public/demoImg1.png)
 
-![AI Image Generator](Client/public/demoImg1.png)
+![AI Image Generator](Client/public/demoImg2.png)
 
 
 ---
