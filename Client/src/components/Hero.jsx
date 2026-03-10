@@ -4,14 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 function Hero() {
-  const companies = [
-    "Instagram",
-    "Facebook",
-    "Slack",
-    "Framer",
-    "Netflix",
-    "Google",
-    "LinkedIn",
+  const features = [
+    "AI-Articles",
+    "Blog-Titles",
+    "Resume-AI",
+    "AI-Chat",
+    "AI-Images",
+    "BG-Removal",
+    "Object-Removal",
+    "Gallery",
+    "Dashboard",
+    "Premium-Plan",
   ];
 
   const Navigate = useNavigate();
@@ -122,7 +125,7 @@ function Hero() {
         <div className="absolute right-0 top-0 h-full w-[30%] bg-gradient-to-l from-white to-transparent z-10 rounded-full"></div>
         <div className="mx-auto w-[70%] overflow-hidden">
           <div className="flex animate-marquee">
-            {companies.map((c, i) => (
+            {features.map((c, i) => (
               <span
                 key={i}
                 className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-600"
@@ -130,7 +133,7 @@ function Hero() {
                 {c}
               </span>
             ))}
-            {companies.map((c, i) => (
+            {features.map((c, i) => (
               <span
                 key={`dup-${i}`}
                 className="flex-shrink-0 mx-6 text-base sm:text-xl md:text-2xl font-semibold text-blue-600"
