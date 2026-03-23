@@ -9,12 +9,17 @@ import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://lumix-ai-tq1h.onrender.com",
+];
 
 app.use(
   cors({
     origin(origin, cb) {
-      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      if (!origin || allowedOrigins.includes(origin)) {
+        return cb(null, true);
+      }
       cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
