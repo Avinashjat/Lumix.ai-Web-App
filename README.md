@@ -7,7 +7,7 @@ The platform integrates multiple AI services and provides a unified dashboard fo
 
 ## Live Demo
 
-https://your-live-demo-link.com
+https://lumix-ai-tq1h.onrender.com/
 
 ---
 
